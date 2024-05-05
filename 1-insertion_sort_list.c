@@ -1,41 +1,53 @@
 #include "sort.h"
 
 /**
- * insertion_sort_list - Sorts a doubly linked list of integers in ascending order using Insertion sort
- * @list: The list to sort
+ * swap - swap between two nodes
+ * @i: node addy
+ * @j: node addy
  */
+
+void swap(listint_t *i, listint_t *j)
+{
+	if (i->prev)
+		i->prev->next = j;
+	if (j->next)
+		j->next->prev = i;
+	i->next = j->next;
+	j->prev = i->prev;
+	i->prev = j;
+	j->next = i;
+}
+
+/**
+ * inserttion_sort_list - insertion sort algorithm
+ * list: list to sort
+ */
+
 void insertion_sort_list(listint_t **list)
 {
-    listint_t *sorted = NULL, *current = *list, *next, *temp;
+	listint_t *x, *y;
 
-    while (current != NULL)
-    {
-        next = current->next;
+	if (!list || !*list || !(*list)->next)
+		return;
+	x = (*list)->next;
 
-        if (sorted == NULL || sorted->n >= current->n)
-        {
-            current->next = sorted;
-            current->prev = NULL;
-            if (sorted != NULL)
-                sorted->prev = current;
-            sorted = current;
-        }
-        else
-        {
-            temp = sorted;
-            while (temp->next != NULL && temp->next->n < current->n)
-                temp = temp->next;
+	while (x)
+	{
+		y  = x;
+		x = x->next;
 
-            current->next = temp->next;
-            if (temp->next != NULL)
-                temp->next->prev = current;
-            temp->next = current;
-            current->prev = temp;
-        }
+		while (y && y->prev)
+		{
+			if (y->prev->n > y->n)
+			{
+				swap(y->prev, y);
+				if (!y->prev)
+					*list = y;
+				print_list((const listint_t *)*list);
+			}
+			else
+				y = y->prev;
+		}
 
-        print_list(sorted);
-        current = next;
-    }
-
-    *list = sorted;
+	}
 }
